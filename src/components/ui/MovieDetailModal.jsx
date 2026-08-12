@@ -1,127 +1,155 @@
 'use client';
 
-import React from 'react';
-import Image from 'next/image';
-import { X, Play, Star, Calendar, Clock, Film, Tag, ExternalLink } from 'lucide-react';
+import React, { useEffect } from 'react';
+import { X, ExternalLink, Clock, Calendar, Film, Play, Star } from 'lucide-react';
 import { useStore } from '@/lib/store';
 
-export function MovieDetailModal() {
+export function MovieDetailModal({ movie: propMovie, onClose: propOnClose }) {
   const { selectedMovie, setSelectedMovie, setTrailerMovie, resetCamera } = useStore();
 
-  if (!selectedMovie) return null;
-
+  const activeMovie = propMovie || selectedMovie;
   const handleClose = () => {
+    if (propOnClose) propOnClose();
     setSelectedMovie(null);
   };
 
+  // Close modal when pressing the Escape key
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') handleClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  if (!activeMovie) return null;
+
+  const poster = activeMovie.posterUrl || activeMovie.poster_url || activeMovie.poster_path;
+  const year = activeMovie.year || activeMovie.release_year || '1990';
+  const runtime = activeMovie.runtime || '120 min';
+  const wikiUrl = activeMovie.wikiUrl || activeMovie.wiki_url;
+  const genresList = activeMovie.genres || activeMovie.genres_list || (activeMovie.genre ? [activeMovie.genre] : ['Bollywood']);
+
   const handlePlayTrailer = () => {
-    setTrailerMovie(selectedMovie);
+    setTrailerMovie(activeMovie);
   };
 
   return (
-    <aside
-      className={`fixed top-0 right-0 bottom-0 z-30 w-full sm:w-[450px] glass-panel border-l border-white/10 p-6 flex flex-col justify-between shadow-2xl transition-transform duration-500 ease-out transform ${
-        selectedMovie ? 'translate-x-0' : 'translate-x-full'
-      }`}
-    >
-      {/* Header Close Button */}
-      <div className="flex items-center justify-between pb-4 border-b border-white/10">
-        <div className="flex items-center gap-2">
-          <Film className="w-5 h-5 text-retro-neonPink" />
-          <span className="font-mono text-xs uppercase tracking-widest text-retro-neonCyan font-bold">
-            VHS FEATURE TAPE
-          </span>
-        </div>
-        <button
-          onClick={handleClose}
-          className="p-1.5 rounded-full bg-white/5 hover:bg-white/20 text-gray-300 hover:text-white transition-colors"
-          aria-label="Close details"
-        >
-          <X className="w-5 h-5" />
-        </button>
-      </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-end bg-black/70 backdrop-blur-md transition-opacity animate-in fade-in duration-200">
+      {/* Click outside backdrop to close */}
+      <div className="absolute inset-0" onClick={handleClose} />
 
-      {/* Main Content Area */}
-      <div className="flex-1 overflow-y-auto my-4 pr-1 space-y-5">
-        {/* Movie Poster & Backdrop */}
-        <div className="relative w-full h-64 rounded-xl overflow-hidden border border-white/10 shadow-vhs group">
-          <img
-            src={selectedMovie.poster_url || selectedMovie.poster_path}
-            alt={selectedMovie.title}
-            className="w-full h-full object-cover object-top filter contrast-105 group-hover:scale-105 transition-transform duration-500"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-retro-dark via-retro-dark/40 to-transparent" />
-
-          {/* Floating Genre Tag */}
-          <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-retro-neonPink/90 text-white font-mono text-[10px] uppercase font-bold tracking-wider shadow-neon-pink">
-            {selectedMovie.genre || 'ACTION'}
-          </div>
-
-          {/* Quick Rating Badge */}
-          <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-black/80 text-retro-neonYellow font-mono text-xs font-bold flex items-center gap-1 border border-retro-neonYellow/30">
-            <Star className="w-3.5 h-3.5 fill-current" />
-            <span>{selectedMovie.vote_average || 8.0}</span>
-          </div>
-        </div>
-
-        {/* Title & Metadata */}
+      {/* Modal Slide-in Drawer */}
+      <div className="relative z-10 h-full w-full max-w-md bg-gray-950 border-l border-amber-500/30 text-white p-6 shadow-2xl flex flex-col justify-between overflow-y-auto animate-in slide-in-from-right duration-300">
+        
         <div>
-          <h2 className="text-2xl font-black tracking-wide text-white leading-tight mb-2">
-            {selectedMovie.title}
-          </h2>
+          {/* Header with Close Button */}
+          <div className="flex items-center justify-between border-b border-gray-800 pb-4 mb-6">
+            <span className="text-xs font-semibold tracking-widest text-amber-400 uppercase flex items-center gap-1.5 font-mono">
+              <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+              📼 VHS Archive Details
+            </span>
+            <button
+              onClick={handleClose}
+              className="p-2 rounded-full text-gray-400 hover:text-white hover:bg-gray-800 transition"
+              aria-label="Close modal"
+            >
+              <X size={20} />
+            </button>
+          </div>
 
-          <div className="flex flex-wrap items-center gap-4 text-xs font-mono text-gray-300">
-            <div className="flex items-center gap-1.5 bg-white/5 px-2.5 py-1 rounded border border-white/10">
-              <Calendar className="w-3.5 h-3.5 text-retro-neonCyan" />
-              <span>{selectedMovie.release_year || '1990'}</span>
-            </div>
-            <div className="flex items-center gap-1.5 bg-white/5 px-2.5 py-1 rounded border border-white/10">
-              <Clock className="w-3.5 h-3.5 text-retro-neonPink" />
-              <span>{selectedMovie.runtime || '120 min'}</span>
+          {/* Movie Poster & Title Preview */}
+          <div className="flex gap-4 mb-6">
+            <img
+              src={poster}
+              alt={activeMovie.title}
+              className="w-28 h-40 object-cover rounded-lg border border-amber-500/20 shadow-lg filter contrast-105"
+            />
+            <div className="flex flex-col justify-center">
+              <h2 className="text-2xl font-bold text-white mb-2 leading-tight">
+                {activeMovie.title}
+              </h2>
+
+              {/* Metadata Badges */}
+              <div className="flex flex-wrap items-center gap-3 text-sm text-gray-300 font-mono">
+                <div className="flex items-center gap-1 bg-white/5 px-2 py-0.5 rounded border border-white/10">
+                  <Calendar size={14} className="text-amber-400" />
+                  <span>{year}</span>
+                </div>
+                <div className="flex items-center gap-1 bg-white/5 px-2 py-0.5 rounded border border-white/10">
+                  <Clock size={14} className="text-amber-400" />
+                  <span>{runtime}</span>
+                </div>
+              </div>
             </div>
           </div>
+
+          {/* Genres Tag List */}
+          <div className="mb-6">
+            <h3 className="text-xs uppercase tracking-wider text-gray-400 mb-2 flex items-center gap-1.5 font-mono">
+              <Film size={14} className="text-amber-400" /> Genres
+            </h3>
+            <div className="flex flex-wrap gap-2">
+              {genresList && genresList.length > 0 ? (
+                genresList.map((genre, idx) => (
+                  <span
+                    key={idx}
+                    className="px-3 py-1 text-xs font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-full"
+                  >
+                    {genre}
+                  </span>
+                ))
+              ) : (
+                <span className="text-xs text-gray-500">Uncategorized</span>
+              )}
+            </div>
+          </div>
+
+          {/* Overview */}
+          {activeMovie.overview && (
+            <div className="mb-6">
+              <h3 className="text-xs uppercase tracking-wider text-gray-400 mb-2 font-mono">
+                SYNOPSIS / PLOT
+              </h3>
+              <p className="text-sm text-gray-300 leading-relaxed bg-black/40 p-3.5 rounded-lg border border-gray-800">
+                {activeMovie.overview}
+              </p>
+            </div>
+          )}
         </div>
 
-        {/* Overview */}
-        <div className="space-y-2">
-          <h3 className="text-xs font-mono uppercase text-retro-neonCyan tracking-wider">
-            SYNOPIS / PLOT OVERVIEW
-          </h3>
-          <p className="text-sm text-gray-300 leading-relaxed font-sans bg-black/30 p-3.5 rounded-lg border border-white/5">
-            {selectedMovie.overview}
-          </p>
-        </div>
-      </div>
-
-      {/* Action Footer Buttons */}
-      <div className="pt-4 border-t border-white/10 flex flex-col gap-2">
-        <button
-          onClick={handlePlayTrailer}
-          className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-retro-neonPink to-retro-accent text-white font-bold text-sm tracking-wide shadow-neon-pink hover:opacity-95 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
-        >
-          <Play className="w-4 h-4 fill-current" />
-          PLAY TRAILER VIDEO
-        </button>
-
-        {selectedMovie.wiki_url && (
-          <a
-            href={selectedMovie.wiki_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full py-2.5 px-4 rounded-xl bg-retro-neonCyan/10 hover:bg-retro-neonCyan/20 text-retro-neonCyan font-mono text-xs tracking-wider border border-retro-neonCyan/30 transition-all flex items-center justify-center gap-2"
+        {/* Action Buttons */}
+        <div className="pt-6 border-t border-gray-800 flex flex-col gap-2.5">
+          <button
+            onClick={handlePlayTrailer}
+            className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-gradient-to-r from-retro-neonPink to-retro-accent hover:opacity-95 text-white font-bold text-sm rounded-xl transition shadow-neon-pink"
           >
-            <ExternalLink className="w-3.5 h-3.5" />
-            READ WIKIPEDIA ARTICLE
-          </a>
-        )}
+            <Play size={16} className="fill-current" />
+            <span>PLAY TRAILER VIDEO</span>
+          </button>
 
-        <button
-          onClick={resetCamera}
-          className="w-full py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 font-mono text-xs tracking-wider border border-white/10 hover:text-white transition-all text-center"
-        >
-          RETURN TO OVERVIEW CAMERA
-        </button>
+          {wikiUrl && (
+            <a
+              href={wikiUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-amber-500 hover:bg-amber-600 text-gray-950 font-bold rounded-xl transition shadow-lg text-sm"
+            >
+              <span>Read on Wikipedia</span>
+              <ExternalLink size={16} />
+            </a>
+          )}
+
+          <button
+            onClick={resetCamera}
+            className="w-full py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 font-mono text-xs tracking-wider border border-white/10 hover:text-white transition-all text-center"
+          >
+            RETURN TO OVERVIEW CAMERA
+          </button>
+        </div>
       </div>
-    </aside>
+    </div>
   );
 }
+
+export default MovieDetailModal;
