@@ -85,36 +85,6 @@ retro-movie-shop/
 
 ---
 
-## 🚀 QUICK START (CLERK SETUP GUIDE)
-
-Follow these steps to open the store on your local machine:
-
-### 1. Clone the Repository
-```bash
-git clone https://github.com/iammsp-star/retro-movie-shop.git
-cd retro-movie-shop
-```
-
-### 2. Install Dependencies
-```bash
-npm install --legacy-peer-deps
-```
-
-### 3. Set Up Environment Variables *(Optional)*
-Create a `.env.local` file in the root directory to fetch live TMDB data:
-```env
-NEXT_PUBLIC_TMDB_API_KEY=your_tmdb_api_key_here
-```
-*(If omitted, BingeBuster 3D will automatically load the curated 90s classic catalog!)*
-
-### 4. Run the Development Server
-```bash
-npm run dev
-```
-Open your browser and navigate to `http://localhost:3000`.
-
----
-
 ## 📜 EMPLOYEE POLICY & LATE FEES
 
 > ⚠️ **LATE FEE NOTICE**: Tapes kept past midnight on Sunday will incur a **$2.50 per day late fee**!
