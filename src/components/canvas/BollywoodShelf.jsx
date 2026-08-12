@@ -79,7 +79,13 @@ function MovieBox({ position, movie, onClick }) {
         receiveShadow
         onClick={(e) => {
           e.stopPropagation();
-          onClick(movie);
+          if (meshRef.current) {
+            const worldPos = new THREE.Vector3();
+            meshRef.current.getWorldPosition(worldPos);
+            onClick(movie, [worldPos.x, worldPos.y, worldPos.z]);
+          } else {
+            onClick(movie, [0, 0, 0]);
+          }
         }}
         onPointerOver={(e) => {
           e.stopPropagation();
