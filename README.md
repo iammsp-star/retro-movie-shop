@@ -1,4 +1,4 @@
-# 📼 BINGEBUSTER 3D — VIRTUAL VIDEO RENTAL STORE 📼
+# 📼 RETRO MOVIE SHOP — 3D VIRTUAL VIDEO STORE 📼
 > *"BE KIND, REWIND! your one-stop 3D digital video shop for Friday night movie magic."*
 
 ![Next.js](https://img.shields.io/badge/Next.js-14.2-black?style=for-the-badge&logo=next.js)
@@ -11,20 +11,20 @@
 ---
 
 ```
-  ____ _____ _   _  ____ _____ ____  _   _ ____ _____ _____ ____    _____ ____  
- | __ )_   _| \ | |/ ___| ____| __ )| | | / ___|_   _| ____|  _ \  |___ /|  _ \ 
- |  _ \ | | |  \| | |  _|  _| |  _ \| | | \___ \ | | |  _| | |_) |   |_ \| | | |
- | |_) || | | |\  | |_| | |___| |_) | |_| |___) || | | |___|  _ <   ___) | |_| |
- |____/ |_| |_| \_|\____|_____|____/ \___/|____/ |_| |_____|_| \_\ |____/|____/ 
+  ____ _____ _____ ____   ___    __  __  ___  _   _ ___ _____   ____  _  _  ___  ____  
+ |  _ \ ____|_   _|  _ \ / _ \  |  \/  |/ _ \| | | |_ _| ____| / ___|| || |/ _ \|  _ \ 
+ | |_) |  _|   | | | |_) | | | | | |\/| | | | | | | || |  _|   \___ \| || | | | | |_) |
+ |  _ <| |___  | | |  _ <| |_| | | |  | | |_| | |_| || | |___   ___) | __ | |_| |  __/ 
+ |_| \_\_____| |_| |_| \_\\___/  |_|  |_|\___/ \___/|___|_____| |____/|_||_|\___/|_|   
                                                                                 
                     [ OFFICIAL 1990S MEMBER HANDBOOK & SETUP GUIDE ]
 ```
 
 ---
 
-## 📟 WELCOME TO BINGEBUSTER VIDEO!
+## 📟 WELCOME TO RETRO MOVIE SHOP!
 
-Step inside the neon-lit aisles of **BingeBuster 3D**, the virtual video store where it is perpetually 1998! Smell that retro blue carpet, grab a bucket of buttered popcorn, and stroll down three fully interactive 3D shelves stocked with physical VHS tapes.
+Step inside the neon-lit aisles of **Retro Movie Shop**, the virtual video store where it is perpetually 1998! Smell that retro blue carpet, grab a bucket of buttered popcorn, and stroll down three fully interactive 3D shelves stocked with physical VHS tapes.
 
 Whether you're looking for explosive **Action**, mind-bending **Sci-Fi**, or spine-chilling **Horror**, click any VHS box to launch a dynamic camera zoom with motion blur, inspect high-res cover art, read plot summaries, and pop the trailer into the VCR.
 
