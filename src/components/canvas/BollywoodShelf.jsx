@@ -31,17 +31,17 @@ function createFallbackTexture(title) {
   return new THREE.CanvasTexture(canvas);
 }
 
-function MovieBox({ position, movie, onClick }) {
+function MovieBox({ position, posterUrl, title, movie, onClick }) {
   const [hovered, setHovered] = useState(false);
   const meshRef = useRef();
 
-  const posterUrl = movie.posterUrl || movie.poster_url || movie.poster_path;
+  const url = posterUrl || movie?.posterUrl || movie?.poster_url || movie?.poster_path;
 
   let texture;
   try {
-    texture = useTexture(posterUrl);
+    texture = useTexture(url);
   } catch (err) {
-    texture = useMemo(() => createFallbackTexture(movie.title), [movie.title]);
+    texture = useMemo(() => createFallbackTexture(title || movie?.title), [title, movie?.title]);
   }
 
   if (texture) {
@@ -57,35 +57,15 @@ function MovieBox({ position, movie, onClick }) {
     meshRef.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), delta * 10);
   });
 
-  const materials = useMemo(() => {
-    const plastic = new THREE.MeshStandardMaterial({ color: '#111', roughness: 0.4 });
-    const spine = new THREE.MeshStandardMaterial({ color: '#1c1917', roughness: 0.5 });
-    const front = new THREE.MeshStandardMaterial({
-      map: texture || null,
-      color: texture ? '#ffffff' : '#f59e0b',
-      roughness: 0.3,
-    });
-    const back = new THREE.MeshStandardMaterial({ color: '#09090b', roughness: 0.6 });
-
-    return [spine, spine, plastic, plastic, front, back];
-  }, [texture]);
-
   return (
     <group position={position}>
       <mesh
         ref={meshRef}
-        material={materials}
         castShadow
         receiveShadow
         onClick={(e) => {
           e.stopPropagation();
-          if (meshRef.current) {
-            const worldPos = new THREE.Vector3();
-            meshRef.current.getWorldPosition(worldPos);
-            onClick(movie, [worldPos.x, worldPos.y, worldPos.z]);
-          } else {
-            onClick(movie, [0, 0, 0]);
-          }
+          onClick();
         }}
         onPointerOver={(e) => {
           e.stopPropagation();
@@ -99,6 +79,12 @@ function MovieBox({ position, movie, onClick }) {
         }}
       >
         <boxGeometry args={[0.7, 1.0, 0.15]} />
+        <meshStandardMaterial attach="material-0" color="#111" roughness={0.4} />
+        <meshStandardMaterial attach="material-1" color="#111" roughness={0.4} />
+        <meshStandardMaterial attach="material-2" color="#000" roughness={0.5} />
+        <meshStandardMaterial attach="material-3" color="#000" roughness={0.5} />
+        <meshStandardMaterial attach="material-4" map={texture} color={texture ? '#ffffff' : '#f59e0b'} roughness={0.3} />
+        <meshStandardMaterial attach="material-5" color="#111" roughness={0.6} />
 
         {hovered && (
           <lineSegments>
@@ -110,11 +96,11 @@ function MovieBox({ position, movie, onClick }) {
 
       {hovered && (
         <Html position={[0, 0.7, 0.1]} center distanceFactor={6} className="pointer-events-none select-none">
-          <div className="bg-gray-950/95 border border-amber-500 text-white px-3 py-1.5 rounded shadow-lg whitespace-nowrap text-xs font-semibold flex items-center gap-2">
+          <div className="bg-gray-950/95 border border-amber-500 text-white px-3 py-1.5 rounded shadow-lg whitespace-nowrap text-xs font-semibold flex items-center gap-2 font-mono">
             <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
-            <span>{movie.title}</span>
-            <span className="text-amber-400 font-mono text-[10px] bg-black/60 px-1 rounded">
-              {movie.year || movie.release_year}
+            <span>{title || movie?.title}</span>
+            <span className="text-amber-400 bg-black/60 px-1 rounded">
+              {movie?.year || movie?.release_year || '2000'}
             </span>
           </div>
         </Html>
@@ -133,7 +119,6 @@ export function BollywoodShelf({ genre = 'Action', shelfPosition = [0, 0, 0], on
         if (data[genre]) {
           setMovies(data[genre].slice(0, 7));
         } else {
-          // Fallback to first available category
           const firstCat = Object.keys(data)[0];
           if (firstCat && data[firstCat]) {
             setMovies(data[firstCat].slice(0, 7));
@@ -145,32 +130,33 @@ export function BollywoodShelf({ genre = 'Action', shelfPosition = [0, 0, 0], on
 
   return (
     <group position={shelfPosition}>
-      {/* Wooden Shelf Structure */}
-      <mesh position={[0, -0.55, 0]} receiveShadow castShadow>
+      {/* Physical Shelf Frame */}
+      <mesh position={[0, -0.05, 0]} receiveShadow castShadow>
         <boxGeometry args={[6.5, 0.08, 0.5]} />
         <meshStandardMaterial color="#292524" roughness={0.6} />
       </mesh>
-      <mesh position={[-3.2, 0, 0]} receiveShadow castShadow>
+      <mesh position={[-3.2, 0.5, 0]} receiveShadow castShadow>
         <boxGeometry args={[0.08, 1.2, 0.4]} />
         <meshStandardMaterial color="#1c1917" roughness={0.7} />
       </mesh>
-      <mesh position={[3.2, 0, 0]} receiveShadow castShadow>
+      <mesh position={[3.2, 0.5, 0]} receiveShadow castShadow>
         <boxGeometry args={[0.08, 1.2, 0.4]} />
         <meshStandardMaterial color="#1c1917" roughness={0.7} />
       </mesh>
 
-      {/* Render Movies along the shelf */}
+      {/* Render Movies along the 3D shelf */}
       {movies.map((movie, index) => {
-        const spacing = 0.85;
-        const startX = -((movies.length - 1) * spacing) / 2;
-        const xPos = startX + index * spacing;
+        const xOffset = (index - movies.length / 2) * 0.85;
+        const boxPos = [shelfPosition[0] + xOffset, shelfPosition[1] + 0.5, shelfPosition[2]];
 
         return (
           <MovieBox
             key={movie.id || index}
-            position={[xPos, 0, 0]}
+            position={[xOffset, 0.5, 0]}
+            posterUrl={movie.posterUrl || movie.poster_url || movie.poster_path}
+            title={movie.title}
             movie={movie}
-            onClick={onSelectMovie}
+            onClick={() => onSelectMovie(movie, boxPos)}
           />
         );
       })}
