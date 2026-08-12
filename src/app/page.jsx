@@ -3,15 +3,15 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 
-const RetroStore3D = dynamic(
-  () => import('@/components/canvas/RetroStore3D').then((mod) => mod.default || mod),
+const RetroBusterStore = dynamic(
+  () => import('@/components/canvas/RetroBusterStore').then((mod) => mod.default || mod),
   {
     ssr: false,
     loading: () => (
-      <div className="w-full h-screen bg-gray-950 flex flex-col items-center justify-center text-white">
+      <div className="w-full h-screen bg-black flex flex-col items-center justify-center text-white">
         <div className="w-12 h-12 border-4 border-amber-400 border-t-transparent rounded-full animate-spin mb-4" />
         <p className="font-mono text-amber-400 text-sm font-bold tracking-widest animate-pulse">
-          INITIALIZING 3D RETRO BOLLYWOOD VAULT...
+          ENTER-ING FIRST-PERSON 3D STORE...
         </p>
       </div>
     ),
@@ -19,5 +19,5 @@ const RetroStore3D = dynamic(
 );
 
 export default function HomePage() {
-  return <RetroStore3D />;
+  return <RetroBusterStore />;
 }
