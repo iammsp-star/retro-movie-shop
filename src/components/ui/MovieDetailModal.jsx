@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { X, Play, Star, Calendar, Clock, Film, Tag } from 'lucide-react';
+import { X, Play, Star, Calendar, Clock, Film, Tag, ExternalLink } from 'lucide-react';
 import { useStore } from '@/lib/store';
 
 export function MovieDetailModal() {
@@ -102,6 +102,18 @@ export function MovieDetailModal() {
           <Play className="w-4 h-4 fill-current" />
           PLAY TRAILER VIDEO
         </button>
+
+        {selectedMovie.wiki_url && (
+          <a
+            href={selectedMovie.wiki_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full py-2.5 px-4 rounded-xl bg-retro-neonCyan/10 hover:bg-retro-neonCyan/20 text-retro-neonCyan font-mono text-xs tracking-wider border border-retro-neonCyan/30 transition-all flex items-center justify-center gap-2"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+            READ WIKIPEDIA ARTICLE
+          </a>
+        )}
 
         <button
           onClick={resetCamera}

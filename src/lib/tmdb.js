@@ -238,9 +238,30 @@ export async function getMoviesByGenreKey(genreKey) {
 }
 
 /**
- * Fetch all movies grouped by genre
+ * Fetch all movies grouped by genre (loads local dataset public/data/movies.json if available)
  */
 export async function getAllStoreMovies() {
+  // Check if public/data/movies.json is available
+  try {
+    const res = await fetch('/data/movies.json');
+    if (res.ok) {
+      const data = await res.json();
+      const results = {};
+      
+      for (const cat of Object.keys(GENRES)) {
+        if (data[cat] && data[cat].length > 0) {
+          // Take top 6 movies for each 3D shelf
+          results[cat] = data[cat].slice(0, 6);
+        } else {
+          results[cat] = MOCK_MOVIES[cat] || [];
+        }
+      }
+      return results;
+    }
+  } catch (err) {
+    console.info('Local movies.json dataset not found, using TMDB / default catalog.');
+  }
+
   const categories = Object.keys(GENRES);
   const results = {};
 
