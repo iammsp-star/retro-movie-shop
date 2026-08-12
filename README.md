@@ -1,6 +1,7 @@
 # 📼 RETRO MOVIE SHOP — 3D VIRTUAL VIDEO STORE 📼
 > *"BE KIND, REWIND! your one-stop 3D digital video shop for Friday night movie magic."*
 
+[![Visit Website](https://img.shields.io/badge/🌐_VISIT_WEBSITE-LIVE_DEMO-ff007f?style=for-the-badge&logo=vercel&logoColor=white)](https://retro-movie-shop.vercel.app)
 ![Next.js](https://img.shields.io/badge/Next.js-14.2-black?style=for-the-badge&logo=next.js)
 ![React Three Fiber](https://img.shields.io/badge/R3F-8.16-blueviolet?style=for-the-badge&logo=three.js)
 ![GSAP](https://img.shields.io/badge/GSAP-3.12-green?style=for-the-badge&logo=greensock)
@@ -23,6 +24,8 @@
 ---
 
 ## 📟 WELCOME TO RETRO MOVIE SHOP!
+
+👉 **[Click Here to Visit & Experience the Live Website 🌐](https://retro-movie-shop.vercel.app)**
 
 Step inside the neon-lit aisles of **Retro Movie Shop**, the virtual video store where it is perpetually 1998! Smell that retro blue carpet, grab a bucket of buttered popcorn, and stroll down three fully interactive 3D shelves stocked with physical VHS tapes.
 
