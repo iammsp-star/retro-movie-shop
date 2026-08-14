@@ -2,6 +2,7 @@
 
 import React, { useRef, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Physics, RigidBody } from '@react-three/rapier';
 import { PointerLockControls } from '@react-three/drei';
 import * as THREE from 'three';
 import { useStore } from '@/store/useStore';
@@ -43,7 +44,7 @@ function useKeyboardControls() {
   return keys;
 }
 
-// First Person Player Physics & Raycasting Interaction
+// First Person Player Physics & Raycasting Controller
 function PlayerController() {
   const { camera } = useThree();
   const keys = useKeyboardControls();
@@ -66,10 +67,10 @@ function PlayerController() {
     if (keys.current.left) camera.position.addScaledVector(sideVector, -moveSpeed);
     if (keys.current.right) camera.position.addScaledVector(sideVector, moveSpeed);
 
-    // Enforce Store Room Boundaries
+    // Enforce Store Room Physical Boundaries
     camera.position.x = THREE.MathUtils.clamp(camera.position.x, -16, 16);
     camera.position.z = THREE.MathUtils.clamp(camera.position.z, -16, 17);
-    camera.position.y = 1.7; // Eye level
+    camera.position.y = 1.7; // Fixed Eye Level
   });
 
   return null;
@@ -81,17 +82,23 @@ export default function StoreSimulatorCanvas() {
       <ambientLight intensity={1.2} />
       <directionalLight position={[10, 12, 10]} intensity={0.8} color="#ffffff" castShadow />
 
-      <PlayerController />
-      <PointerLockControls />
+      {/* Physics World Simulation Wrapper (@react-three/rapier) */}
+      <Physics gravity={[0, -9.81, 0]}>
+        <PlayerController />
+        <PointerLockControls />
 
-      {/* Store Enclosure & Interactive Features */}
-      <RoomEnvironment />
-      <DoorSign />
-      <CheckoutDesk />
-      <TapeDropBox />
-      <AisleShelves />
-      <CustomerManager />
-      <PlacementPreview />
+        {/* RigidBody Enclosure & Store Objects */}
+        <RigidBody type="fixed" colliders="trimesh">
+          <RoomEnvironment />
+        </RigidBody>
+
+        <DoorSign />
+        <CheckoutDesk />
+        <TapeDropBox />
+        <AisleShelves />
+        <CustomerManager />
+        <PlacementPreview />
+      </Physics>
     </Canvas>
   );
 }
